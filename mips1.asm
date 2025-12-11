@@ -15,19 +15,19 @@ checkSelf $t2
 addi $v0, $zero, 5
 syscall
 move $t0, $v0
-addi $t9, $zero, 1
+addi $t3, $zero, 1
 
-beq $t0, $t9, sFire
-addi $t9, $t9, 1
-beq $t0, $t9, bFire
-addi $t9, $t9, 1
-beq $t0, $t9, aFire
-addi $t9, $t9, 1
-beq $t0, $t9, bandage
-addi $t9, $t9, 1
-beq $t0, $t9, armor
-addi $t9, $t9, 1
-beq $t0, $t9, rLoad
+beq $t0, $t3, sFire
+addi $t3, $t3, 1
+beq $t0, $t3, bFire
+addi $t3, $t3, 1
+beq $t0, $t3, aFire
+addi $t3, $t3, 1
+beq $t0, $t3, bandage
+addi $t3, $t3, 1
+beq $t0, $t3, armor
+addi $t3, $t3, 1
+beq $t0, $t3, rLoad
 
 j endMain
 

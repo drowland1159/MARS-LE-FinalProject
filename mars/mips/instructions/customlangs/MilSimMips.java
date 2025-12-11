@@ -235,7 +235,7 @@ public class MilSimMips extends CustomAssembly {
 
         // STARTING :: Special Instructions :: STARTING
 
-        // reload NOT DONE
+        // reload
         instructionList.add(
             new BasicInstruction("reload $t1",
                 "loads object as 30 if zero or less. Will load object as 31 if 1 or greater.",
@@ -256,7 +256,7 @@ public class MilSimMips extends CustomAssembly {
             )
         );
 
-        // fire NOT DONE
+        // fire
         instructionList.add(
             new BasicInstruction("fire $t1, $t2",
             	 "$t1 fires at $t2, If $t1 will decrease by 1. If hit $t2 will decrease.",
@@ -281,15 +281,17 @@ public class MilSimMips extends CustomAssembly {
                             int hit = random.nextInt(3);
                             sourceUnit.mag--; 
                             if(hit > 0) {
+                                SystemIO.printString("Hit enemy! -20\n");
                                if (targetUnit.armor > 0) {
                                     if (targetUnit.armor < dealtDamage) {
                                         dealtDamage = dealtDamage - targetUnit.armor;
+                                        targetUnit.armor = 0;
                                         targetUnit.health = targetUnit.health - dealtDamage;
                                     } else {
                                         targetUnit.armor = targetUnit.armor - dealtDamage;
                                     }
                                 } else {
-                                    targetUnit.health = targetUnit.health - 20;
+                                    targetUnit.health = targetUnit.health - dealtDamage;
                                 }
                             } else {
                                 SystemIO.printString("Missed!\n");
@@ -300,7 +302,7 @@ public class MilSimMips extends CustomAssembly {
             )
         );
 
-        // burstFire NOT DONE
+        // burstFire
         instructionList.add(
             new BasicInstruction("burstFire $t1,$t2",
             	 "$t1 fires at $t2, If $t1 will decrease by 3 or will become 0. If hit $t2 will decrease.",
@@ -315,9 +317,10 @@ public class MilSimMips extends CustomAssembly {
 
                         int tValSource = RegisterFile.getValue(operands[1]);
                         Unit targetUnit = mapOfUnits.get(tValSource);
+                        int dealtDamage;
 
                         for(int i = 0; i < 3; i++) {
-                            int dealtDamage = 20;
+                            dealtDamage = 20;
                             if (sourceUnit.mag == 0) {
                                 SystemIO.printString("*click*\n");
                                 return;
@@ -330,12 +333,13 @@ public class MilSimMips extends CustomAssembly {
                                     if (targetUnit.armor > 0) {
                                         if (targetUnit.armor < dealtDamage) {
                                             dealtDamage = dealtDamage - targetUnit.armor;
+                                            targetUnit.armor = 0;
                                             targetUnit.health = targetUnit.health - dealtDamage;
                                         } else {
                                             targetUnit.armor = targetUnit.armor - dealtDamage;
                                         }
                                     } else {
-                                        targetUnit.health = targetUnit.health - 20;
+                                        targetUnit.health = targetUnit.health - dealtDamage;
                                     }
                                 } else {
                                     SystemIO.printString("Missed!\n");
@@ -347,7 +351,7 @@ public class MilSimMips extends CustomAssembly {
             )
         );
 
-        // autoFire NOT DONE
+        // autoFire
         instructionList.add (
             new BasicInstruction("autoFire $t1,$t2",
             	 "$t1 fires at $t2, If $t1 will decrease by 15 or will become 0. If hit $t2 will decrease.",
@@ -363,8 +367,10 @@ public class MilSimMips extends CustomAssembly {
                         int tValSource = RegisterFile.getValue(operands[1]);
                         Unit targetUnit = mapOfUnits.get(tValSource);
 
+                        int dealtDamage;
+
                         for(int i = 0; i < 15; i++) {
-                            int dealtDamage = 20;
+                            dealtDamage = 20;
                             if (targetUnit.health <= 0) {
                                 return;
                             }
@@ -377,16 +383,16 @@ public class MilSimMips extends CustomAssembly {
                                 sourceUnit.mag--;
                                 if(hit > 7) {
                                     SystemIO.printString("Hit enemy! -20\n");
-                                    sourceUnit.mag--;
                                     if (targetUnit.armor > 0) {
                                         if (targetUnit.armor < dealtDamage) {
                                             dealtDamage = dealtDamage - targetUnit.armor;
+                                            targetUnit.armor = 0;
                                             targetUnit.health = targetUnit.health - dealtDamage;
                                         } else {
                                             targetUnit.armor = targetUnit.armor - dealtDamage;
                                         }
                                     } else {
-                                        targetUnit.health = targetUnit.health - 20;
+                                        targetUnit.health = targetUnit.health - dealtDamage;
                                     }
                                 } else {
                                     SystemIO.printString("Missed!\n");
@@ -398,7 +404,7 @@ public class MilSimMips extends CustomAssembly {
             )
         );
 
-        // heal NOT DONE
+        // heal
         instructionList.add(
             new BasicInstruction("heal $t1",
                 "Increases health by 25",
@@ -418,7 +424,7 @@ public class MilSimMips extends CustomAssembly {
             )
         );
 
-        // rearmor NOT DONE
+        // rearmor
         instructionList.add(
             new BasicInstruction("rearmor $t1",
                 "Increases armor by 25",
@@ -489,7 +495,7 @@ public class MilSimMips extends CustomAssembly {
             )
         );
    
-        // NOTE :: All of the below would not be in the theoretical final product
+        // NOTE :: All of the below (remaining special commands) would not be in the theoretical final product
         // NOTE :: I am unsure on how to print through the .data with this as my la is off
         instructionList.add(
             new BasicInstruction("StartMenu $t1",
@@ -498,8 +504,8 @@ public class MilSimMips extends CustomAssembly {
                 "010101 00000 fffff 0000000000000000",
                 new SimulationCode() {
                     public void simulate(ProgramStatement statement) throws ProcessingException {
-                        SystemIO.printString("Your Turn:\n1. Single Fire  2. Burst Fire  3. Auto Fire" +
-                            " 4. Bandage  5. Rearmor  6. Reload\n");
+                        SystemIO.printString("Your Turn:\n1. Single Fire  |  2. Burst Fire  |  3. Auto Fire" +
+                            "  |  4. Bandage  |  5. Rearmor  |  6. Reload\n");
                     }
                 }
             )
@@ -516,7 +522,7 @@ public class MilSimMips extends CustomAssembly {
                         int sValSource= RegisterFile.getValue(operands[0]);
                         Unit sourceUnit = mapOfUnits.get(sValSource);
                         if(sourceUnit.isDead()) {
-                            SystemIO.printString("Player " + RegisterFile.getValue(operands[0]) + " is out of health.");
+                            SystemIO.printString("Player " + RegisterFile.getValue(operands[0]) + " is out of health.\n");
                             RegisterFile.updateRegister(operands[1], 1);
                         } else {
                             RegisterFile.updateRegister(operands[1], 0);
@@ -540,6 +546,7 @@ class SyscallExit extends AbstractSyscall {
 }
 // ENDING :: Syscalls :: ENDING
 
+// STARTING :: Unit :: STARTING
 class Unit {
     public int mag;
     public int health;
@@ -561,3 +568,4 @@ class Unit {
         }
     }
 }
+// ENDING :: Unit :: ENDING
